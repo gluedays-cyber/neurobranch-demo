@@ -1,0 +1,31 @@
+text,label
+cancel payment and request refund,Refund
+want my money back refund,Refund
+reverse transaction charge refund,Refund
+issue refund for purchase order,Refund
+please process full refund immediately,Refund
+sent return parcel need refund,Refund
+defective item request refund reimbursement,Refund
+credit card transaction chargeback refund,Refund
+where is my package delivery tracking,Delivery
+courier delivery shipping tracking status,Delivery
+update delivery shipping destination address,Delivery
+package delivery transit shipment delayed,Delivery
+track courier parcel delivery location,Delivery
+courier delivery tracking number lookup,Delivery
+parcel delivery has not arrived yet,Delivery
+change courier delivery dropoff point,Delivery
+forgot my account login password,Account
+locked out of user account login,Account
+change account profile email credentials,Account
+two factor account security authentication,Account
+reset user account dashboard password,Account
+account security profile recovery support,Account
+unlock frozen user account profile,Account
+reset credentials for account signin,Account
+billing credit card monthly receipt,Billing
+billing subscription invoice tax receipt,Billing
+change billing payment method invoice,Billing
+download corporate billing vat invoice,Billing
+annual subscription billing payment statement,Billing
+update billing invoice payment details,Billing

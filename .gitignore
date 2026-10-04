@@ -1,0 +1,18 @@
+# Binaries for programs and tests
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output of the go coverage tool
+*.cov
+*.prof
+
+# Local IDE and scratch files
+.vscode/
+.idea/
+*.swp
+*~
