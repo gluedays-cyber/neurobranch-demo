@@ -1,8 +1,16 @@
 # NeuroBranch Intelligent Branching Demo
 
+<p align="center">
+  <img src="assets/neurobranch.jpg" width="100%" alt="NeuroBranch">
+</p>
+
 A high-performance demonstration project showcasing the **Intelligent Branching** programming paradigm in pure Go using [`github.com/gluedays-cyber/neurobranch`](https://github.com/gluedays-cyber/neurobranch).
 
 It proves how embedded domain-specific neural networks replace fragile static branching (`if` / regex) and slow, expensive cloud LLMs with **deterministic in-memory neural routing in ~30 μs with 0 B/op heap allocation**.
+
+<p align="center">
+  <a href="MANUAL.md"><strong>📖 Read the Demo Execution Manual & Guide →</strong></a>
+</p>
 
 ---
 
