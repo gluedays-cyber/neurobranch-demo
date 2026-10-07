@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"path/filepath"
 	"testing"
 
@@ -165,3 +166,73 @@ func TestAtomicHotSwap(t *testing.T) {
 		t.Errorf("expected 'TechSupport' branch after hot-swap, got %q", ai.Select(hotSwapQuery))
 	}
 }
+
+func TestFunctionalOptionsCompilation(t *testing.T) {
+	csvPath := filepath.Join("data", "train.csv")
+	samples, err := neurobranch.LoadCSVDataset(csvPath)
+	if err != nil {
+		t.Fatalf("LoadCSVDataset failed: %v", err)
+	}
+
+	cfg := neurobranch.DefaultTrainConfig()
+	cfg.Epochs = 50
+
+	ai, err := neurobranch.TrainAIWithOptions(
+		samples,
+		cfg,
+		neurobranch.WithConfidenceThreshold(0.85, 0.40),
+		neurobranch.WithEnergyThreshold(3.0),
+		neurobranch.WithMarginCutoff(0.15),
+		neurobranch.WithPatternGuard(true),
+	)
+	if err != nil {
+		t.Fatalf("TrainAIWithOptions failed: %v", err)
+	}
+
+	if branch := ai.Select("cancel payment and request refund"); branch != "Refund" {
+		t.Errorf("expected 'Refund' branch, got %q", branch)
+	}
+}
+
+func TestTemperatureScaling(t *testing.T) {
+	ai := setupTestAI(t)
+
+	defaultTemp := ai.Temperature()
+	if defaultTemp <= 0.0 {
+		t.Errorf("expected positive temperature, got %.2f", defaultTemp)
+	}
+
+	ai.SetTemperature(1.5)
+	if ai.Temperature() != 1.5 {
+		t.Errorf("expected temperature 1.5, got %.2f", ai.Temperature())
+	}
+
+	ai.SetTemperature(1.0)
+	if ai.Temperature() != 1.0 {
+		t.Errorf("expected temperature 1.0, got %.2f", ai.Temperature())
+	}
+}
+
+func TestSentinelErrors(t *testing.T) {
+	ai := setupTestAI(t)
+	ctx := context.Background()
+
+	// 1. Noise repetition query triggers ErrDegeneratedInput
+	_, err := ai.RouteQuery(ctx, "zzzzzzzz xxxxxxxx yyyyyyyy")
+	if err == nil {
+		t.Fatalf("expected error for degenerated noise, got nil")
+	}
+	if !errors.Is(err, neurobranch.ErrDegeneratedInput) && !errors.Is(err, neurobranch.ErrOutOfDomain) && !errors.Is(err, neurobranch.ErrUnlearnedVocabulary) {
+		t.Errorf("expected sentinel guard error, got %v", err)
+	}
+
+	// 2. Out-of-Domain query triggers ErrOutOfDomain or ErrUnlearnedVocabulary
+	_, err = ai.RouteQuery(ctx, "quantum physics entangled photon spin state")
+	if err == nil {
+		t.Fatalf("expected error for OOD query, got nil")
+	}
+	if !errors.Is(err, neurobranch.ErrOutOfDomain) && !errors.Is(err, neurobranch.ErrUnlearnedVocabulary) {
+		t.Errorf("expected OOD sentinel error, got %v", err)
+	}
+}
+

@@ -16,7 +16,7 @@ It proves how embedded domain-specific neural networks replace fragile static br
 
 ## 1. Architectural Comparison Matrix
 
-| Metric / Capability | Retro Branching (`if` / Regex) | Cloud LLMs (OpenAI / Claude) | **NeuroBranch v2.0 (Intelligent Branching)** |
+| Metric / Capability | Retro Branching (`if` / Regex) | Cloud LLMs (OpenAI / Claude) | **NeuroBranch v3.0 (Intelligent Branching)** |
 | :--- | :--- | :--- | :--- |
 | **Inference Latency** | < 1 μs | 400 ms – 2,500 ms (Network bound) | **~30 μs (In-Memory Pure Math)** |
 | **Permutations & Typos** | ❌ Fails on unseen phrasing | ✅ Supported via attention | ✅ **Absorbed into continuous latent vectors** |
@@ -30,7 +30,21 @@ It proves how embedded domain-specific neural networks replace fragile static br
 
 ## 2. Intelligent Branching Primitives
 
-### 2.1 Native Go `switch-case` Branching (`ai.Select`)
+### 2.1 Functional Options Compilation (`neurobranch.TrainAIWithOptions`)
+Externalizes runtime policies, energy cutoffs, confidence thresholds, and pattern guards directly during compilation.
+
+```go
+ai, err := neurobranch.TrainAIWithOptions(
+    samples,
+    cfg,
+    neurobranch.WithConfidenceThreshold(0.80, 0.45),
+    neurobranch.WithEnergyThreshold(3.0),
+    neurobranch.WithMarginCutoff(0.15),
+    neurobranch.WithPatternGuard(true),
+)
+```
+
+### 2.2 Native Go `switch-case` Branching (`ai.Select`)
 Transforms natural language, typos, and phrasing variations into switch labels. Unlearned vocabulary (OOV) or Out-of-Domain queries return `""`, cleanly falling back to native `default:` branch.
 
 ```go
@@ -47,7 +61,7 @@ default:
 }
 ```
 
-### 2.2 Native Go Guard Clauses (`ai.If`, `ai.Is`)
+### 2.3 Native Go Guard Clauses (`ai.If`, `ai.Is`)
 Replaces brittle regex or substring matching with confidence-calibrated neural guard assertions.
 
 ```go
@@ -60,7 +74,7 @@ if ai.Is(query, "Refund", 0.85) {
 }
 ```
 
-### 2.3 Native Go Comma-ok Idiom (`ai.Match`)
+### 2.4 Native Go Comma-ok Idiom (`ai.Match`)
 Follows Go's idiomatic `comma-ok` pattern to separate decisive matches from borderline ambiguous queries.
 
 ```go
@@ -73,7 +87,7 @@ if intent, confident := ai.Match(query); confident {
 }
 ```
 
-### 2.4 Declarative Fluent DSL & Interactive Confirmation (`ai.Switch`)
+### 2.5 Declarative Fluent DSL & Interactive Confirmation (`ai.Switch`)
 Provides fluent method chaining for automated execution (`Auto`), human-in-the-loop confirmation (`Confirm`), and fallback handling (`Default`).
 
 ```go
@@ -95,10 +109,18 @@ err := ai.Switch(query).
     Evaluate(ctx)
 ```
 
-### 2.5 Multi-Metric Neural Inspection (`ai.Inspect`)
+### 2.6 Multi-Metric Neural Inspection (`ai.Inspect`)
 Decomposes queries into BPE subwords, single-character ratio (`SingleCharRatio`), Shannon entropy, and LogSumExp free energy for full observability and drift monitoring.
 
-### 2.6 Zero-Downtime Atomic Hot-Swap (`ai.AppendDataMap`)
+### 2.7 Dynamic Runtime Reconfiguration & Temperature Scaling
+Adjusts minimum Free Energy cutoffs and Softmax temperature scaling dynamically on live traffic without reloading model weights.
+
+```go
+ai.SetEnergyThreshold(3.2)
+ai.SetTemperature(1.5) // Softens logit disparities for stricter entropy gating
+```
+
+### 2.8 Zero-Downtime Atomic Hot-Swap (`ai.AppendDataMap`)
 Appends new domain intents and retrains weights in-memory, replacing pointers atomically without dropping active requests or restarting the service.
 
 ---
@@ -110,11 +132,12 @@ neurobranch-demo/
 ├── data/
 │   └── train.csv       # Labeled CSV dataset for domain neural network compilation
 ├── weights/
-│   └── model.bin       # Compiled Little-Endian self-calibrating binary model
+│   └── model.bin       # Compiled Little-Endian self-calibrating binary model (Format v3)
 ├── go.mod              # Go module definition and local neurobranch replace directive
-├── main.go             # 7-step comprehensive intelligent branching benchmark suite
+├── main.go             # 8-step comprehensive intelligent branching benchmark suite
 ├── main_test.go        # Unit & integration test suite verifying all branching mechanics
-└── README.md           # Technical documentation and architecture specification
+├── README.md           # Technical documentation and architecture specification
+└── MANUAL.md           # Execution manual and API cheat-sheet
 ```
 
 ---

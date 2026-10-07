@@ -30,15 +30,17 @@ neurobranch-demo/
 
 ---
 
-## 3. 핵심 5대 지능형 분기 패턴
+## 3. 핵심 7대 지능형 분기 패턴 (v3.0 규격)
 
 | 패턴 | 함수/형식 | 특성 및 목적 |
 | :--- | :--- | :--- |
-| **Native Switch** | `switch branch := ai.Select(query); branch` | 자연어 변형을 switch 레이블로 직접 매핑 |
-| **Guard Clause** | `if ai.Match(query, "Refund") { ... }` | 단일 의도 타겟팅 및 조기 탈출 분기 |
-| **Comma-ok Pattern** | `if branch, ok := ai.Route(query); ok { ... }` | 신뢰도 임계 미달 및 OOD 쿼리의 안전한 격리 |
-| **Declarative DSL** | `ai.Branch(query).On("Cancel", ...).Else(...)` | 선언적 함수 체이닝 분기 제어 |
-| **Atomic Hot-Swap** | `ai.SwapModel(newModel)` | 무중단 무잠금(Lock-Free) 0 ns 런타임 갱신 |
+| **Functional Options** | `TrainAIWithOptions(samples, cfg, opts...)` | 신뢰도 임계치, LogSumExp 에너지 컷오프 등 옵션 외부화 주입 |
+| **Native Switch** | `switch branch := ai.Select(query); branch` | 자연어 변형을 Go 표준 switch 레이블로 직접 매핑 (`default:` 폴백) |
+| **Guard Clause** | `if ai.If(query, "Refund") { ... }` / `ai.Is` | 단일 의도 타겟팅 및 신뢰도 기반 조기 탈출 분기 |
+| **Comma-ok Pattern** | `if intent, ok := ai.Match(query); ok { ... }` | 결정적(true) vs 모호한(false) 의도 판별 및 OOD 안전 격리 |
+| **Declarative DSL** | `ai.Switch(query).Case(...).Auto(...).Confirm(...).Default(...).Evaluate(ctx)` | 자동 실행(`Auto`), 사용자 확인(`Confirm`), 기본 예외(`Default`) 플루언트 체이닝 |
+| **Dynamic Tuning** | `ai.SetEnergyThreshold(...)` / `ai.SetTemperature(...)` | 무재학습 동적 에너지 가드 임계치 및 Softmax 온도 스케일링 튜닝 |
+| **Atomic Hot-Swap** | `ai.AppendDataMap(...)` / `ai.Reload(path)` | 무중단 무잠금(Lock-Free) 0 ns 가중치 교체 및 신규 도메인 실시간 주입 |
 
 ---
 
@@ -55,3 +57,4 @@ go test -v ./...
 ```bash
 go run main.go
 ```
+
